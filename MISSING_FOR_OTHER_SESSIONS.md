@@ -2,6 +2,27 @@
 
 This document outlines what components and features are missing or incomplete that would be needed for other development sessions to continue working on this project effectively.
 
+## Immediate Remaining Tasks (From Previous Session)
+
+These are concrete, actionable tasks that were identified in a previous development session and need to be completed:
+
+### Frontend Tasks
+- [ ] **Update `accounts.html`** — Remove OAuth buttons, add Auto-Detect UI
+- [ ] **Update `accounts.js`** — Add scan/import methods, remove OAuth method
+
+### Backend Tasks
+- [ ] **Add `POST /api/v1/accounts/add/scan`** — Bulk import endpoint for account scanning
+
+### Testing Tasks
+- [ ] **Create `test_oauth_manager.py`** — Tests for scan logic functionality
+- [ ] **Create `test_routes_accounts.py`** — Tests for account management endpoints
+
+### Verification Tasks
+- [ ] **Run all tests and confirm pass** — Ensure all existing and new tests pass
+- [ ] **Create walkthrough documentation** — Summarize all changes made in the session
+
+*Note: These tasks are from `C:\Users\tlibi\.gemini\antigravity\brain\cd931f14-20d3-493c-b462-18ee848b0547\task.md.resolved`*
+
 ## Authentication & Session Management
 
 ### Missing Components:
