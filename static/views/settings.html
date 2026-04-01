@@ -1,0 +1,241 @@
+<div x-data="settings" class="p-6 space-y-6 max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-center gap-4">
+            <h1 class="text-2xl font-bold text-kiro-text tracking-tight">
+                Settings
+            </h1>
+            <div class="flex items-center h-6 px-3 rounded-full bg-kiro-secondary/50 border border-kiro-secondary shadow-sm backdrop-blur-sm">
+                <span class="text-[10px] font-mono text-kiro-text/60 uppercase tracking-wider">
+                    SYSTEM CONFIGURATION
+                </span>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span x-show="hasUnsavedChanges" class="text-xs text-yellow-500 font-mono animate-pulse">
+                Unsaved changes
+            </span>
+        </div>
+    </div>
+
+    <!-- Settings Sections -->
+    <div class="space-y-6">
+        <!-- General Settings -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-lg font-bold text-kiro-text mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                General Settings
+            </h3>
+
+            <div class="space-y-5">
+                <!-- Refresh Interval -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Refresh Interval</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">How often to refresh dashboard data (5-300 seconds)</p>
+                        <p x-show="validationErrors.refreshInterval" class="text-xs text-red-400 mt-1 font-mono" x-text="validationErrors.refreshInterval"></p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="number"
+                               x-model.number="settings.refreshInterval"
+                               @input="validateRefreshInterval()"
+                               min="5"
+                               max="300"
+                               class="input input-sm w-24 bg-kiro-secondary border-kiro-secondary text-kiro-text font-mono text-right focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all"
+                               :class="{'border-red-500': validationErrors.refreshInterval}">
+                        <span class="text-xs text-kiro-text/60 font-mono">sec</span>
+                    </div>
+                </div>
+
+                <!-- Show Config Warning -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Show Configuration Warning</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">Display warning banner when configuration needs attention</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               x-model="settings.showConfigWarning"
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-kiro-secondary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kiro-cta"></div>
+                    </label>
+                </div>
+
+                <!-- Theme -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Theme</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">Interface color scheme (light theme coming soon)</p>
+                    </div>
+                    <select x-model="settings.theme"
+                            class="select select-sm bg-kiro-secondary border-kiro-secondary text-kiro-text font-mono focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all">
+                        <option value="dark">Dark</option>
+                        <option value="light" disabled>Light (Coming Soon)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Account Settings -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-lg font-bold text-kiro-text mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Multi-Account Settings
+                <span class="ml-auto px-2 py-0.5 bg-kiro-cta/20 text-kiro-cta text-[9px] font-mono rounded uppercase">Beta</span>
+            </h3>
+
+            <div class="space-y-5">
+                <!-- Account Strategy -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Account Selection Strategy</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">How to select accounts for requests (requires multi-account mode)</p>
+                    </div>
+                    <select x-model="settings.accountStrategy"
+                            class="select select-sm bg-kiro-secondary border-kiro-secondary text-kiro-text font-mono focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all">
+                        <option value="hybrid">Hybrid (Intelligent)</option>
+                        <option value="sticky">Sticky (Cache-Optimized)</option>
+                        <option value="round-robin">Round-Robin (Throughput)</option>
+                    </select>
+                </div>
+
+                <!-- Auto Refresh Accounts -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Auto-Refresh Account Status</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">Automatically refresh account status every 30 seconds</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               x-model="settings.autoRefreshAccounts"
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-kiro-secondary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kiro-cta"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-lg font-bold text-kiro-text mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                System Information
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-all duration-300 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm text-kiro-text/60 font-mono">VERSION</p>
+                        <svg class="w-4 h-4 text-kiro-text/40 group-hover:text-kiro-cta transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-kiro-text text-lg font-bold" x-text="$store.global.version"></p>
+                </div>
+                <div class="p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-all duration-300 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm text-kiro-text/60 font-mono">UPTIME</p>
+                        <svg class="w-4 h-4 text-kiro-text/40 group-hover:text-kiro-cta transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-kiro-cta text-lg font-bold" x-text="window.utils.formatUptime($store.data.health.uptime_seconds)"></p>
+                </div>
+                <div class="p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-all duration-300 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm text-kiro-text/60 font-mono">MEMORY USAGE</p>
+                        <svg class="w-4 h-4 text-kiro-text/40 group-hover:text-kiro-cta transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-kiro-text text-lg font-bold" x-text="$store.data.health.memory_usage_mb + ' MB'"></p>
+                </div>
+                <div class="p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-all duration-300 group">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm text-kiro-text/60 font-mono">STATUS</p>
+                        <svg class="w-4 h-4 text-kiro-text/40 group-hover:text-kiro-cta transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p class="font-mono text-kiro-cta text-lg font-bold uppercase" x-text="$store.data.health.status"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Settings -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h3 class="text-lg font-bold text-kiro-text mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                </svg>
+                Advanced Settings
+            </h3>
+
+            <div class="space-y-5">
+                <!-- Enable Debug Mode -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Enable Debug Mode</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">Show detailed logs and debug information in console</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               x-model="settings.debugMode"
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-kiro-secondary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kiro-cta"></div>
+                    </label>
+                </div>
+
+                <!-- Show Timestamps -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50 hover:border-kiro-cta/30 transition-colors">
+                    <div class="flex-1">
+                        <label class="text-sm font-mono text-kiro-text font-semibold">Show Timestamps</label>
+                        <p class="text-xs text-kiro-text/60 mt-1">Display timestamps in logs and activity feeds</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               x-model="settings.showTimestamps"
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-kiro-secondary rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-kiro-cta"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 bg-kiro-bg/30 rounded-lg border border-kiro-secondary/50">
+            <div class="flex items-center gap-2 text-xs text-kiro-text/60 font-mono">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>Settings are saved locally in your browser</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button @click="resetSettings()"
+                        :disabled="!hasUnsavedChanges"
+                        class="btn btn-sm bg-kiro-secondary hover:bg-kiro-secondary/80 border-kiro-secondary text-kiro-text transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Reset to Defaults
+                </button>
+                <button @click="saveSettings()"
+                        :disabled="!isValid || !hasUnsavedChanges"
+                        class="btn btn-sm bg-kiro-cta hover:bg-kiro-cta/80 border-kiro-cta text-kiro-bg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        :class="{'animate-pulse': hasUnsavedChanges && isValid}">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

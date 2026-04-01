@@ -1,0 +1,21 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0 -- C:\Program Files\Python314\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\tlibi\kiro-gateway
+configfile: pytest.ini
+plugins: anyio-4.12.1, hypothesis-6.151.10, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 17 items
+
+tests/unit/test_account_manager.py::TestAccountManager::test_initialize_creates_default_file PASSED [  5%]
+tests/unit/test_account_manager.py::TestAccountManager::test_initialize_loads_existing_accounts PASSED [ 11%]
+tests/unit/test_account_manager.py::TestAccountManager::test_initialize_only_once PASSED [ 17%]
+tests/unit/test_account_manager.py::TestAccountManager::test_select_account_returns_available PASSED [ 23%]
+tests/unit/test_account_manager.py::TestAccountManager::test_select_account_not_initialized_raises PASSED [ 29%]
+tests/unit/test_account_manager.py::TestAccountManager::test_notify_success_resets_failures PASSED [ 35%]
+tests/unit/test_account_manager.py::TestAccountManager::test_notify_failure_marks_rate_limited FAILED [ 41%]
+tests/unit/test_account_manager.py::TestAccountManager::test_notify_failure_marks_invalid_on_auth_error PASSED [ 47%]
+tests/unit/test_account_manager.py::TestAccountManager::test_mark_account_invalid PASSED [ 52%]
+tests/unit/test_account_manager.py::TestAccountManager::test_clear_account_invalid PASSED [ 58%]
+tests/unit/test_account_manager.py::TestAccountManager::test_get_account_status PASSED [ 64%]

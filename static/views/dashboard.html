@@ -1,0 +1,150 @@
+<div x-data="dashboard" class="p-6 space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-center gap-4">
+            <h1 class="text-2xl font-bold text-kiro-text tracking-tight">
+                Dashboard
+            </h1>
+            <div class="flex items-center h-6 px-3 rounded-full bg-kiro-secondary/50 border border-kiro-secondary shadow-sm backdrop-blur-sm">
+                <span class="text-[10px] font-mono text-kiro-text/60 uppercase tracking-wider">
+                    KIRO GATEWAY SYSTEM
+                </span>
+            </div>
+        </div>
+
+        <!-- Status Indicator -->
+        <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-kiro-primary/60 border border-kiro-secondary/40 whitespace-nowrap flex-shrink-0">
+            <div class="relative flex items-center justify-center">
+                <span class="absolute w-1.5 h-1.5 bg-kiro-cta rounded-full animate-ping opacity-75"></span>
+                <span class="relative w-1.5 h-1.5 bg-kiro-cta rounded-full"></span>
+            </div>
+            <span class="text-[10px] font-mono text-kiro-text/60 uppercase tracking-wider">LIVE</span>
+            <span class="text-kiro-text/30">•</span>
+            <span class="text-[10px] font-mono text-kiro-text/60 tabular-nums"
+                  x-text="new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', second: '2-digit'})">
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- Total Requests -->
+        <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-4 hover:border-kiro-cta/50 transition-all duration-300 group relative cursor-pointer">
+            <div class="absolute top-3 right-3 text-kiro-text/20 group-hover:text-kiro-cta/70 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                </svg>
+            </div>
+            <div class="text-3xl font-bold text-kiro-text font-mono mb-1" x-text="stats.total"></div>
+            <div class="text-[10px] text-kiro-text/60 font-mono uppercase tracking-wider">TOTAL REQUESTS</div>
+            <div class="text-[10px] text-kiro-cta/60 mt-1">All time</div>
+        </div>
+
+        <!-- Active Requests -->
+        <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-4 hover:border-kiro-cta/50 transition-all duration-300 group relative cursor-pointer">
+            <div class="absolute top-3 right-3 text-kiro-text/20 group-hover:text-kiro-cta/70 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="text-3xl font-bold text-kiro-cta font-mono mb-1" x-text="stats.active"></div>
+            <div class="text-[10px] text-kiro-text/60 font-mono uppercase tracking-wider">ACTIVE</div>
+            <div class="text-[10px] text-kiro-cta/60 mt-1">In-flight</div>
+        </div>
+
+        <!-- Rate Limited -->
+        <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-4 hover:border-yellow-500/50 transition-all duration-300 group relative cursor-pointer">
+            <div class="absolute top-3 right-3 text-kiro-text/20 group-hover:text-yellow-500/70 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <div class="text-3xl font-bold text-yellow-500 font-mono mb-1" x-text="stats.limited"></div>
+            <div class="text-[10px] text-kiro-text/60 font-mono uppercase tracking-wider">RATE LIMITED</div>
+            <div class="text-[10px] text-yellow-500/60 mt-1">Throttled</div>
+        </div>
+
+        <!-- Success Rate -->
+        <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-4 hover:border-kiro-cta/50 transition-all duration-300 group relative cursor-pointer">
+            <div class="absolute top-3 right-3 text-kiro-text/20 group-hover:text-kiro-cta/70 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="text-3xl font-bold text-kiro-text font-mono mb-1" x-text="stats.successRate + '%'"></div>
+            <div class="text-[10px] text-kiro-text/60 font-mono uppercase tracking-wider">SUCCESS RATE</div>
+            <div class="text-[10px] text-kiro-cta/60 mt-1">HTTP 200</div>
+        </div>
+    </div>
+
+    <!-- Request Volume Chart -->
+    <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-6 hover:border-kiro-cta/30 transition-all duration-200">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <h3 class="text-xs font-mono text-kiro-text/60 uppercase tracking-widest">REQUEST VOLUME</h3>
+            </div>
+
+            <!-- Usage Stats -->
+            <div class="flex flex-wrap gap-2.5 text-[10px] font-mono">
+                <div class="px-2.5 py-1 rounded bg-kiro-secondary/50 border border-kiro-secondary">
+                    <span class="text-kiro-text/60">Total:</span>
+                    <span class="text-kiro-text ml-1 font-bold" x-text="usageStats.total"></span>
+                </div>
+                <div class="px-2.5 py-1 rounded bg-kiro-secondary/50 border border-kiro-secondary">
+                    <span class="text-kiro-text/60">Today:</span>
+                    <span class="text-kiro-cta ml-1 font-bold" x-text="usageStats.today"></span>
+                </div>
+                <div class="px-2.5 py-1 rounded bg-kiro-secondary/50 border border-kiro-secondary">
+                    <span class="text-kiro-text/60">1H:</span>
+                    <span class="text-kiro-cta ml-1 font-bold" x-text="usageStats.thisHour"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-48 w-full relative">
+            <canvas id="requestVolumeChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Model Usage -->
+    <div class="bg-kiro-primary border border-kiro-secondary rounded-xl p-6 hover:border-kiro-cta/30 transition-all duration-200">
+        <h3 class="text-xs font-mono text-kiro-text/60 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            MODEL USAGE
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-kiro-secondary">
+                        <th class="text-left py-3 px-4 text-sm font-mono text-kiro-text/60">MODEL</th>
+                        <th class="text-right py-3 px-4 text-sm font-mono text-kiro-text/60">REQUESTS</th>
+                        <th class="text-right py-3 px-4 text-sm font-mono text-kiro-text/60">PERCENTAGE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="[model, count] in sortedModelUsage || []" :key="model">
+                        <tr class="border-b border-kiro-secondary/50 hover:bg-kiro-secondary/30 transition-colors duration-150 cursor-pointer">
+                            <td class="py-3 px-4 font-mono text-sm text-kiro-text" x-text="model"></td>
+                            <td class="py-3 px-4 font-mono text-sm text-kiro-cta text-right font-bold" x-text="count"></td>
+                            <td class="py-3 px-4 text-right">
+                                <div class="flex items-center justify-end gap-3">
+                                    <div class="w-24 h-2 bg-kiro-secondary rounded-full overflow-hidden">
+                                        <div class="h-full bg-kiro-cta rounded-full transition-all duration-300"
+                                             :style="`width: ${(count / Math.max(...Object.values($store.data.metrics.model_usage))) * 100}%`"></div>
+                                    </div>
+                                    <span class="text-xs font-mono text-kiro-text/60 w-12 text-right"
+                                          x-text="`${((count / stats.total) * 100).toFixed(1)}%`"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

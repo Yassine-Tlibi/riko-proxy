@@ -144,62 +144,6 @@ class TestVerifyApiKey:
 
 
 # =============================================================================
-# Tests for root endpoint (/)
-# =============================================================================
-
-class TestRootEndpoint:
-    """Tests for the GET / endpoint."""
-    
-    def test_root_returns_status_ok(self, test_client):
-        """
-        What it does: Verifies root endpoint returns ok status.
-        Purpose: Ensure basic health check works.
-        """
-        print("Action: GET /...")
-        response = test_client.get("/")
-        
-        print(f"Result: {response.json()}")
-        assert response.status_code == 200
-        assert response.json()["status"] == "ok"
-    
-    def test_root_returns_gateway_message(self, test_client):
-        """
-        What it does: Verifies root endpoint returns gateway message.
-        Purpose: Ensure service identification is present.
-        """
-        print("Action: GET /...")
-        response = test_client.get("/")
-        
-        print(f"Result: {response.json()}")
-        assert response.status_code == 200
-        assert "Kiro Gateway" in response.json()["message"]
-    
-    def test_root_returns_version(self, test_client):
-        """
-        What it does: Verifies root endpoint returns application version.
-        Purpose: Ensure version information is available.
-        """
-        print("Action: GET /...")
-        response = test_client.get("/")
-        
-        print(f"Result: {response.json()}")
-        assert response.status_code == 200
-        assert "version" in response.json()
-        assert response.json()["version"] == APP_VERSION
-    
-    def test_root_does_not_require_auth(self, test_client):
-        """
-        What it does: Verifies root endpoint is accessible without authentication.
-        Purpose: Ensure public health check availability.
-        """
-        print("Action: GET / without auth headers...")
-        response = test_client.get("/")
-        
-        print(f"Status: {response.status_code}")
-        assert response.status_code == 200
-
-
-# =============================================================================
 # Tests for health endpoint (/health)
 # =============================================================================
 
@@ -216,7 +160,7 @@ class TestHealthEndpoint:
         
         print(f"Result: {response.json()}")
         assert response.status_code == 200
-        assert response.json()["status"] == "healthy"
+        assert response.json()["status"] == "ok"
     
     def test_health_returns_timestamp(self, test_client):
         """
@@ -781,17 +725,8 @@ class TestChatCompletionsMessageTypes:
 class TestRouterIntegration:
     """Tests for router configuration and integration."""
     
-    def test_router_has_root_endpoint(self):
-        """
-        What it does: Verifies root endpoint is registered.
-        Purpose: Ensure endpoint is available.
-        """
-        print("Checking: Router endpoints...")
-        routes = [route.path for route in router.routes]
-        
-        print(f"Found routes: {routes}")
-        assert "/" in routes
-    
+# Removed test_router_has_root_endpoint as / is not in this router
+
     def test_router_has_health_endpoint(self):
         """
         What it does: Verifies health endpoint is registered.
@@ -825,19 +760,8 @@ class TestRouterIntegration:
         print(f"Found routes: {routes}")
         assert "/v1/chat/completions" in routes
     
-    def test_root_endpoint_uses_get_method(self):
-        """
-        What it does: Verifies root endpoint uses GET method.
-        Purpose: Ensure correct HTTP method.
-        """
-        print("Checking: HTTP methods...")
-        for route in router.routes:
-            if route.path == "/":
-                print(f"Route / methods: {route.methods}")
-                assert "GET" in route.methods
-                return
-        pytest.fail("Root endpoint not found")
-    
+# Removed test_root_endpoint_uses_get_method as / is not in this router
+
     def test_health_endpoint_uses_get_method(self):
         """
         What it does: Verifies health endpoint uses GET method.

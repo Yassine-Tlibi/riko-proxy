@@ -85,10 +85,10 @@ def _get_raw_env_value(var_name: str, env_file: str = ".env") -> Optional[str]:
 DEFAULT_SERVER_HOST: str = "0.0.0.0"
 SERVER_HOST: str = os.getenv("SERVER_HOST", DEFAULT_SERVER_HOST)
 
-# Server port (default: 8000)
+# Server port (default: 9000)
 # Can be overridden by CLI: python main.py --port 9000
 # Or by uvicorn directly: uvicorn main:app --port 9000
-DEFAULT_SERVER_PORT: int = 8000
+DEFAULT_SERVER_PORT: int = 9000
 SERVER_PORT: int = int(os.getenv("SERVER_PORT", str(DEFAULT_SERVER_PORT)))
 
 # ==================================================================================================
@@ -97,6 +97,29 @@ SERVER_PORT: int = int(os.getenv("SERVER_PORT", str(DEFAULT_SERVER_PORT)))
 
 # API key for proxy access (clients must pass it in Authorization header)
 PROXY_API_KEY: str = os.getenv("PROXY_API_KEY", "my-super-secret-password-123")
+
+# ==================================================================================================
+# Multi-Account Settings
+# ==================================================================================================
+
+# Enable multi-account mode (default: False for backward compatibility)
+MULTI_ACCOUNT_ENABLED: bool = os.getenv("MULTI_ACCOUNT_ENABLED", "true").lower() in ("true", "1", "yes")
+
+# Path to accounts.json file
+DEFAULT_ACCOUNTS_FILE: str = "~/.config/kiro-gateway/accounts.json"
+ACCOUNTS_FILE: str = os.getenv("ACCOUNTS_FILE", DEFAULT_ACCOUNTS_FILE)
+
+# Account selection strategy: sticky, round-robin, or hybrid
+ACCOUNT_STRATEGY: str = os.getenv("ACCOUNT_STRATEGY", "hybrid").lower()
+
+# Rate limit settings
+RATE_LIMIT_BASE_COOLDOWN_MS: int = int(os.getenv("RATE_LIMIT_BASE_COOLDOWN_MS", "60000"))
+RATE_LIMIT_MAX_COOLDOWN_MS: int = int(os.getenv("RATE_LIMIT_MAX_COOLDOWN_MS", "300000"))
+RATE_LIMIT_MAX_WAIT_MS: int = int(os.getenv("RATE_LIMIT_MAX_WAIT_MS", "120000"))
+
+# Retry settings
+MAX_ACCOUNT_RETRIES: int = int(os.getenv("MAX_ACCOUNT_RETRIES", "5"))
+RETRY_BACKOFF_BASE_MS: int = int(os.getenv("RETRY_BACKOFF_BASE_MS", "1000"))
 
 # ==================================================================================================
 # VPN/Proxy Settings for Kiro API Access
@@ -439,6 +462,23 @@ FAKE_REASONING_OPEN_TAGS: List[str] = ["<thinking>", "<think>", "<reasoning>", "
 # Lower values = faster first token, but may miss tags with leading whitespace.
 # Default: 30 characters (enough for longest tag + some whitespace)
 FAKE_REASONING_INITIAL_BUFFER_SIZE: int = int(os.getenv("FAKE_REASONING_INITIAL_BUFFER_SIZE", "20"))
+
+
+# ==================================================================================================
+# Dashboard Settings
+# ==================================================================================================
+
+# Enable/disable web dashboard UI
+DASHBOARD_ENABLED: bool = os.getenv("DASHBOARD_ENABLED", "true").lower() in ("true", "1", "yes")
+
+# Number of days to retain metrics data in database
+DASHBOARD_RETENTION_DAYS: int = int(os.getenv("DASHBOARD_RETENTION_DAYS", "30"))
+
+# Dashboard update interval in seconds (how often frontend polls for new data)
+DASHBOARD_UPDATE_INTERVAL: int = int(os.getenv("DASHBOARD_UPDATE_INTERVAL", "15"))
+
+# Path to SQLite database for storing metrics
+DASHBOARD_DB_PATH: str = os.getenv("DASHBOARD_DB_PATH", "metrics.db")
 
 
 # ==================================================================================================

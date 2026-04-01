@@ -95,11 +95,11 @@ cp .env.example .env
 # 서버 시작
 python main.py
 
-# 또는 사용자 정의 포트로 (8000이 사용 중인 경우)
+# 또는 사용자 정의 포트로 (9000이 사용 중인 경우)
 python main.py --port 9000
 ```
 
-서버는 `http://localhost:8000`에서 사용 가능합니다
+서버는 `http://localhost:9000`에서 사용 가능합니다
 
 ---
 
@@ -274,7 +274,7 @@ docker-compose up -d
 
 # 3. 상태 확인
 docker-compose logs -f
-curl http://localhost:8000/health
+curl http://localhost:9000/health
 ```
 
 ### Docker Run (Compose 없음)
@@ -284,7 +284,7 @@ curl http://localhost:8000/health
 
 ```bash
 docker run -d \
-  -p 8000:8000 \
+  -p 9000:9000 \
   -e PROXY_API_KEY="my-super-secret-password-123" \
   -e REFRESH_TOKEN="your_refresh_token" \
   --name kiro-gateway \
@@ -299,7 +299,7 @@ docker run -d \
 **Linux/macOS:**
 ```bash
 docker run -d \
-  -p 8000:8000 \
+  -p 9000:9000 \
   -v ~/.aws/sso/cache:/home/kiro/.aws/sso/cache:ro \
   -e KIRO_CREDS_FILE=/home/kiro/.aws/sso/cache/kiro-auth-token.json \
   -e PROXY_API_KEY="my-super-secret-password-123" \
@@ -310,7 +310,7 @@ docker run -d \
 **Windows (PowerShell):**
 ```powershell
 docker run -d `
-  -p 8000:8000 `
+  -p 9000:9000 `
   -v ${HOME}/.aws/sso/cache:/home/kiro/.aws/sso/cache:ro `
   -e KIRO_CREDS_FILE=/home/kiro/.aws/sso/cache/kiro-auth-token.json `
   -e PROXY_API_KEY="my-super-secret-password-123" `
@@ -324,7 +324,7 @@ docker run -d `
 <summary>🔹 .env 파일 사용</summary>
 
 ```bash
-docker run -d -p 8000:8000 --env-file .env --name kiro-gateway ghcr.io/jwadow/kiro-gateway:latest
+docker run -d -p 9000:9000 --env-file .env --name kiro-gateway ghcr.io/jwadow/kiro-gateway:latest
 ```
 
 </details>
@@ -361,7 +361,7 @@ docker-compose pull && docker-compose up -d  # 업데이트
 
 ```bash
 docker build -t kiro-gateway .
-docker run -d -p 8000:8000 --env-file .env kiro-gateway
+docker run -d -p 9000:9000 --env-file .env kiro-gateway
 ```
 
 </details>
@@ -443,7 +443,7 @@ VPN_PROXY_URL=192.168.1.100:8080
 <summary>🔹 간단한 cURL 요청</summary>
 
 ```bash
-curl http://localhost:8000/v1/chat/completions \
+curl http://localhost:9000/v1/chat/completions \
   -H "Authorization: Bearer my-super-secret-password-123" \
   -H "Content-Type: application/json" \
   -d '{
@@ -461,7 +461,7 @@ curl http://localhost:8000/v1/chat/completions \
 <summary>🔹 스트리밍 요청</summary>
 
 ```bash
-curl http://localhost:8000/v1/chat/completions \
+curl http://localhost:9000/v1/chat/completions \
   -H "Authorization: Bearer my-super-secret-password-123" \
   -H "Content-Type: application/json" \
   -d '{
@@ -480,7 +480,7 @@ curl http://localhost:8000/v1/chat/completions \
 <summary>🛠️ 도구 호출 포함</summary>
 
 ```bash
-curl http://localhost:8000/v1/chat/completions \
+curl http://localhost:9000/v1/chat/completions \
   -H "Authorization: Bearer my-super-secret-password-123" \
   -H "Content-Type: application/json" \
   -d '{
@@ -512,7 +512,7 @@ curl http://localhost:8000/v1/chat/completions \
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://localhost:8000/v1",
+    base_url="http://localhost:9000/v1",
     api_key="my-super-secret-password-123"  # .env의 PROXY_API_KEY
 )
 
@@ -539,7 +539,7 @@ for chunk in response:
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
-    base_url="http://localhost:8000/v1",
+    base_url="http://localhost:9000/v1",
     api_key="my-super-secret-password-123",  # .env의 PROXY_API_KEY
     model="claude-sonnet-4-5"
 )
@@ -556,7 +556,7 @@ print(response.content)
 <summary>🔹 간단한 cURL 요청</summary>
 
 ```bash
-curl http://localhost:8000/v1/messages \
+curl http://localhost:9000/v1/messages \
   -H "x-api-key: my-super-secret-password-123" \
   -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
@@ -575,7 +575,7 @@ curl http://localhost:8000/v1/messages \
 <summary>🔹 시스템 프롬프트 포함</summary>
 
 ```bash
-curl http://localhost:8000/v1/messages \
+curl http://localhost:9000/v1/messages \
   -H "x-api-key: my-super-secret-password-123" \
   -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
@@ -595,7 +595,7 @@ curl http://localhost:8000/v1/messages \
 <summary>📡 스트리밍</summary>
 
 ```bash
-curl http://localhost:8000/v1/messages \
+curl http://localhost:9000/v1/messages \
   -H "x-api-key: my-super-secret-password-123" \
   -H "anthropic-version: 2023-06-01" \
   -H "Content-Type: application/json" \
@@ -617,7 +617,7 @@ import anthropic
 
 client = anthropic.Anthropic(
     api_key="my-super-secret-password-123",  # .env의 PROXY_API_KEY
-    base_url="http://localhost:8000"
+    base_url="http://localhost:9000"
 )
 
 # 비스트리밍

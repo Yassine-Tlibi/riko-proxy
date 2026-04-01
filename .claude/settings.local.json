@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s http://localhost:9000/)",
+      "Bash(curl -s -H \"Authorization: Bearer hellothisismypassword\" http://localhost:9000/api/health)",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s -H \"Authorization: Bearer hellothisismypassword\" http://localhost:9000/api/metrics)",
+      "Bash(python -c \"import kiro.metrics_middleware; import kiro.metrics_storage; import kiro.metrics_collector; import kiro.dashboard_models; import kiro.routes_dashboard\")",
+      "Bash(curl -s -H \"Authorization: Bearer my-super-secret-password-123\" http://localhost:9000/api/metrics)",
+      "Bash(uipro:*)",
+      "Bash(mkdir -p /tmp/uipro-temp)",
+      "Read(//tmp/**)",
+      "Bash(python3 scripts/search.py \"developer tools dashboard API gateway monitoring technical\" --design-system -p \"Kiro Gateway\")",
+      "Bash(python scripts/search.py \"developer tools dashboard API gateway monitoring technical\" --design-system -p \"Kiro Gateway\")",
+      "Bash(cd:*)",
+      "Bash(rm static/index.html)",
+      "Bash(mv static/index-new.html static/index.html)",
+      "Bash(python -c \"from kiro.routes_logs import router; print\\(''✓ Logs router imports successfully''\\)\")",
+      "Bash(python -c \"from kiro.routes_logs import router; print\\(''Logs router imports successfully''\\)\")"
+    ]
+  }
+}

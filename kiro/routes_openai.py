@@ -87,31 +87,17 @@ async def verify_api_key(auth_header: str = Security(api_key_header)) -> bool:
 router = APIRouter()
 
 
-@router.get("/")
-async def root():
-    """
-    Health check endpoint.
-    
-    Returns:
-        Status and application version
-    """
-    return {
-        "status": "ok",
-        "message": "Kiro Gateway is running",
-        "version": APP_VERSION
-    }
-
-
 @router.get("/health")
 async def health():
     """
-    Detailed health check.
-    
+    Health check endpoint.
+
     Returns:
         Status, timestamp and version
     """
     return {
-        "status": "healthy",
+        "status": "ok",
+        "message": "Kiro Gateway is running",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "version": APP_VERSION
     }

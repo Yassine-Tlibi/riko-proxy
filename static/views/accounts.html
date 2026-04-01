@@ -1,0 +1,534 @@
+<div x-data="accounts" class="p-6 space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4 mb-6">
+        <div class="flex flex-wrap items-center gap-4">
+            <h1 class="text-2xl font-bold text-kiro-text tracking-tight">
+                Multi-Account Manager
+            </h1>
+            <div class="flex items-center h-6 px-3 rounded-full bg-kiro-secondary/50 border border-kiro-secondary shadow-sm backdrop-blur-sm">
+                <span class="text-[10px] font-mono text-kiro-text/60 uppercase tracking-wider">
+                    ACCOUNT ORCHESTRATION
+                </span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- Add Account Button -->
+            <button @click="showAddAccountModal = true"
+                    class="px-4 py-2 bg-kiro-cta hover:bg-kiro-cta/80 border border-kiro-cta rounded-lg text-kiro-bg text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-lg shadow-kiro-cta/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Add Account</span>
+            </button>
+
+            <!-- Refresh Button -->
+            <button @click="loadAccountStatus()"
+                    class="px-4 py-2 bg-kiro-cta/10 hover:bg-kiro-cta/20 border border-kiro-cta/30 rounded-lg text-kiro-cta text-sm font-mono transition-all duration-200 flex items-center gap-2">
+                <svg class="w-4 h-4" :class="{'animate-spin': loading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                <span>Refresh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div x-show="showAddAccountModal"
+         x-cloak
+         @click.self="showAddAccountModal = false"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+         style="display: none;">
+        <div @click.stop
+             class="bg-kiro-primary border border-kiro-secondary rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-kiro-secondary flex items-center justify-between">
+                <h2 class="text-xl font-bold text-kiro-text">Add Account</h2>
+                <button @click="showAddAccountModal = false"
+                        class="text-kiro-text/60 hover:text-kiro-text transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <p class="text-sm text-kiro-text/70">
+                    Add a Kiro account to increase your API quota limit. Accounts are used to proxy Claude requests with automatic failover.
+                </p>
+
+                <!-- Auto-Detect (Primary Method) -->
+                <div class="space-y-3">
+                    <button @click="scanForAccounts()"
+                            :disabled="scanningAccounts"
+                            class="w-full px-6 py-4 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center gap-3 shadow-lg shadow-cyan-600/20"
+                            aria-label="Auto-detect Kiro IDE accounts on this machine">
+                        <svg class="w-5 h-5" :class="{'animate-spin': scanningAccounts}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <span x-show="!scanningAccounts">Auto-Detect Kiro Accounts</span>
+                        <span x-show="scanningAccounts" class="flex items-center gap-2">
+                            Scanning...
+                        </span>
+                    </button>
+                    <p class="text-xs text-kiro-text/40 font-mono text-center">
+                        Scans ~/.aws/sso/cache/ for Kiro IDE credential files
+                    </p>
+                </div>
+
+                <!-- Scan Results Panel -->
+                <div x-show="scannedAccounts.length > 0"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     class="space-y-3 p-4 bg-kiro-secondary/20 rounded-xl border border-kiro-secondary"
+                     role="region" aria-label="Scan results">
+
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-mono text-kiro-text font-bold flex items-center gap-2">
+                            <svg class="w-4 h-4 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span x-text="`Found ${scannedAccounts.length} account(s)`"></span>
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <button @click="selectAllScanned()"
+                                    class="text-xs font-mono text-kiro-cta hover:text-kiro-cta/80 transition-colors"
+                                    aria-label="Select all accounts">Select All</button>
+                            <span class="text-kiro-text/20">|</span>
+                            <button @click="deselectAllScanned()"
+                                    class="text-xs font-mono text-kiro-text/60 hover:text-kiro-text transition-colors"
+                                    aria-label="Deselect all accounts">Deselect</button>
+                        </div>
+                    </div>
+
+                    <!-- Scanned Account Items -->
+                    <div class="space-y-2 max-h-[200px] overflow-y-auto">
+                        <template x-for="(account, index) in scannedAccounts" :key="account.file_path">
+                            <label class="flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer"
+                                   :class="selectedScannedIndexes.includes(index)
+                                       ? 'bg-kiro-cta/10 border-kiro-cta/40'
+                                       : 'bg-kiro-bg/50 border-kiro-secondary hover:border-kiro-cta/20'">
+                                <input type="checkbox"
+                                       :checked="selectedScannedIndexes.includes(index)"
+                                       @change="toggleScanSelection(index)"
+                                       class="w-4 h-4 rounded border-kiro-secondary text-kiro-cta focus:ring-kiro-cta/50 bg-kiro-bg">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-mono text-kiro-text truncate" x-text="account.email"></span>
+                                        <span class="flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase"
+                                              :class="account.is_expired
+                                                  ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                                  : 'bg-kiro-cta/10 text-kiro-cta border border-kiro-cta/20'"
+                                              x-text="account.is_expired ? 'Expired' : 'Valid'"></span>
+                                    </div>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="text-[11px] font-mono text-kiro-text/40" x-text="`Region: ${account.region}`"></span>
+                                        <span class="text-[11px] font-mono text-kiro-text/40" x-text="`Provider: ${account.provider || 'Unknown'}`"></span>
+                                    </div>
+                                </div>
+                            </label>
+                        </template>
+                    </div>
+
+                    <!-- Import Selected Button -->
+                    <button @click="importScannedAccounts()"
+                            :disabled="selectedScannedIndexes.length === 0 || importingAccounts"
+                            class="w-full px-4 py-2.5 bg-kiro-cta hover:bg-kiro-cta/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-kiro-bg font-semibold transition-all flex items-center justify-center gap-2">
+                        <span x-show="!importingAccounts" x-text="`Import ${selectedScannedIndexes.length} Selected`"></span>
+                        <span x-show="importingAccounts" class="flex items-center gap-2">
+                            <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Importing...
+                        </span>
+                    </button>
+                </div>
+
+                <div class="text-center text-sm text-kiro-text/40 font-mono">OR</div>
+
+                <!-- Manual Mode -->
+                <div class="space-y-4">
+                    <button @click="addMode = 'manual'; showManualForm = !showManualForm"
+                            class="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
+                            aria-label="Add account manually with refresh token">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        <span>Manual Mode</span>
+                    </button>
+
+                    <!-- Manual Form -->
+                    <div x-show="showManualForm" x-collapse class="space-y-4 p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                        <div>
+                            <label for="manual-refresh-token" class="block text-sm font-mono text-kiro-text mb-2">Refresh Token *</label>
+                            <textarea id="manual-refresh-token"
+                                      x-model="manualForm.refreshToken"
+                                      rows="3"
+                                      placeholder="Paste your Kiro refresh token here..."
+                                      class="w-full px-4 py-2 bg-kiro-bg border border-kiro-secondary rounded-lg text-kiro-text font-mono text-sm focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label for="manual-email" class="block text-sm font-mono text-kiro-text mb-2">Email (Optional)</label>
+                            <input type="email"
+                                   id="manual-email"
+                                   x-model="manualForm.email"
+                                   placeholder="account@example.com"
+                                   class="w-full px-4 py-2 bg-kiro-bg border border-kiro-secondary rounded-lg text-kiro-text font-mono text-sm focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all">
+                        </div>
+
+                        <div>
+                            <label for="manual-profile-arn" class="block text-sm font-mono text-kiro-text mb-2">Profile ARN (Optional)</label>
+                            <input type="text"
+                                   id="manual-profile-arn"
+                                   x-model="manualForm.profileArn"
+                                   placeholder="arn:aws:..."
+                                   class="w-full px-4 py-2 bg-kiro-bg border border-kiro-secondary rounded-lg text-kiro-text font-mono text-sm focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all">
+                        </div>
+
+                        <button @click="addAccountManual()"
+                                :disabled="!manualForm.refreshToken || addingAccount"
+                                class="w-full px-4 py-2 bg-kiro-cta hover:bg-kiro-cta/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-kiro-bg font-semibold transition-all">
+                            <span x-show="!addingAccount">Add Account</span>
+                            <span x-show="addingAccount" class="flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                Adding...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center text-sm text-kiro-text/40 font-mono">OR</div>
+
+                <!-- Import from kiro-cli -->
+                <div class="space-y-4">
+                    <button @click="addMode = 'cli'; showCliForm = !showCliForm"
+                            class="w-full px-6 py-4 bg-kiro-secondary hover:bg-kiro-secondary/80 rounded-xl text-kiro-text font-semibold transition-all duration-200 flex items-center justify-center gap-3 border border-kiro-secondary"
+                            aria-label="Import account from kiro-cli database">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Import from kiro-cli</span>
+                    </button>
+
+                    <!-- CLI Form -->
+                    <div x-show="showCliForm" x-collapse class="space-y-4 p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                        <div>
+                            <label for="cli-db-path" class="block text-sm font-mono text-kiro-text mb-2">Database Path *</label>
+                            <input type="text"
+                                   id="cli-db-path"
+                                   x-model="cliForm.dbPath"
+                                   placeholder="~/.local/share/kiro-cli/data.sqlite3"
+                                   class="w-full px-4 py-2 bg-kiro-bg border border-kiro-secondary rounded-lg text-kiro-text font-mono text-sm focus:border-kiro-cta focus:ring-1 focus:ring-kiro-cta transition-all">
+                            <p class="mt-2 text-xs text-kiro-text/50 font-mono">Default: ~/.local/share/kiro-cli/data.sqlite3</p>
+                        </div>
+
+                        <button @click="addAccountCli()"
+                                :disabled="!cliForm.dbPath || addingAccount"
+                                class="w-full px-4 py-2 bg-kiro-cta hover:bg-kiro-cta/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-kiro-bg font-semibold transition-all">
+                            <span x-show="!addingAccount">Import Account</span>
+                            <span x-show="addingAccount" class="flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                                Importing...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div x-show="addAccountError"
+                     class="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
+                     role="alert">
+                    <p class="text-sm text-red-400 font-mono" x-text="addAccountError"></p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-kiro-secondary flex justify-end">
+                <button @click="showAddAccountModal = false"
+                        class="px-4 py-2 bg-kiro-secondary hover:bg-kiro-secondary/80 rounded-lg text-kiro-text text-sm font-semibold transition-all">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Overview Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Accounts -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-5 hover:border-kiro-cta/50 transition-all duration-300 group relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-kiro-cta/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-kiro-cta/10 rounded-lg">
+                        <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-bold text-kiro-text font-mono" x-text="status.total || 0"></span>
+                </div>
+                <div class="text-xs text-kiro-text/60 font-mono uppercase tracking-wider">Total Accounts</div>
+            </div>
+        </div>
+
+        <!-- Available Accounts -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-5 hover:border-kiro-cta/50 transition-all duration-300 group relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-green-500/10 rounded-lg">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-bold text-green-500 font-mono" x-text="status.available || 0"></span>
+                </div>
+                <div class="text-xs text-kiro-text/60 font-mono uppercase tracking-wider">Available</div>
+            </div>
+        </div>
+
+        <!-- Invalid Accounts -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-5 hover:border-red-500/50 transition-all duration-300 group relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-red-500/10 rounded-lg">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-bold text-red-500 font-mono" x-text="status.invalid || 0"></span>
+                </div>
+                <div class="text-xs text-kiro-text/60 font-mono uppercase tracking-wider">Invalid</div>
+            </div>
+        </div>
+
+        <!-- Current Strategy -->
+        <div class="bg-gradient-to-br from-kiro-primary to-kiro-secondary border border-kiro-secondary rounded-xl p-5 hover:border-blue-500/50 transition-all duration-300 group relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-blue-500/10 rounded-lg">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold text-blue-500 font-mono uppercase" x-text="status.strategy || 'N/A'"></span>
+                </div>
+                <div class="text-xs text-kiro-text/60 font-mono uppercase tracking-wider">Strategy</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accounts Table -->
+    <div class="bg-kiro-primary border border-kiro-secondary rounded-xl overflow-hidden">
+        <div class="p-6 border-b border-kiro-secondary">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-mono text-kiro-text/80 uppercase tracking-widest flex items-center gap-2">
+                    <svg class="w-4 h-4 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    Account Details
+                </h3>
+                <div class="text-xs font-mono text-kiro-text/60">
+                    <span x-text="accounts.length"></span> accounts configured
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-kiro-secondary/30">
+                    <tr>
+                        <th class="text-left py-4 px-6 text-xs font-mono text-kiro-text/70 uppercase tracking-wider">Status</th>
+                        <th class="text-left py-4 px-6 text-xs font-mono text-kiro-text/70 uppercase tracking-wider">Email</th>
+                        <th class="text-center py-4 px-6 text-xs font-mono text-kiro-text/70 uppercase tracking-wider">Health</th>
+                        <th class="text-center py-4 px-6 text-xs font-mono text-kiro-text/70 uppercase tracking-wider">Rate Limits</th>
+                        <th class="text-right py-4 px-6 text-xs font-mono text-kiro-text/70 uppercase tracking-wider">Last Used</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-kiro-secondary/50">
+                    <template x-for="(account, index) in accounts" :key="account.email">
+                        <tr class="hover:bg-kiro-secondary/20 transition-colors duration-150">
+                            <!-- Status Indicator -->
+                            <td class="py-4 px-6">
+                                <div class="flex items-center gap-2">
+                                    <template x-if="account.is_invalid">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                            <span class="text-xs font-mono text-red-500 uppercase">Invalid</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="!account.is_invalid && !account.enabled">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                                            <span class="text-xs font-mono text-gray-500 uppercase">Disabled</span>
+                                        </div>
+                                    </template>
+                                    <template x-if="!account.is_invalid && account.enabled">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2 h-2 bg-kiro-cta rounded-full animate-pulse"></div>
+                                            <span class="text-xs font-mono text-kiro-cta uppercase">Active</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </td>
+
+                            <!-- Email -->
+                            <td class="py-4 px-6">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-mono text-kiro-text" x-text="account.email"></span>
+                                    <span class="text-xs font-mono text-kiro-text/40 mt-0.5" x-text="`Account #${index + 1}`"></span>
+                                </div>
+                            </td>
+
+                            <!-- Health Score -->
+                            <td class="py-4 px-6">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div class="w-full max-w-[120px] h-2 bg-kiro-secondary rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full transition-all duration-500"
+                                             :class="{
+                                                 'bg-kiro-cta': account.health_score >= 0.7,
+                                                 'bg-yellow-500': account.health_score >= 0.4 && account.health_score < 0.7,
+                                                 'bg-red-500': account.health_score < 0.4
+                                             }"
+                                             :style="`width: ${account.health_score * 100}%`"></div>
+                                    </div>
+                                    <span class="text-xs font-mono tabular-nums"
+                                          :class="{
+                                              'text-kiro-cta': account.health_score >= 0.7,
+                                              'text-yellow-500': account.health_score >= 0.4 && account.health_score < 0.7,
+                                              'text-red-500': account.health_score < 0.4
+                                          }"
+                                          x-text="`${(account.health_score * 100).toFixed(0)}%`"></span>
+                                </div>
+                            </td>
+
+                            <!-- Rate Limits -->
+                            <td class="py-4 px-6">
+                                <div class="flex flex-col items-center gap-1">
+                                    <template x-if="Object.keys(account.rate_limits).length === 0">
+                                        <span class="text-xs font-mono text-kiro-text/40">No limits</span>
+                                    </template>
+                                    <template x-if="Object.keys(account.rate_limits).length > 0">
+                                        <div class="flex flex-col gap-1">
+                                            <template x-for="[model, limit] in Object.entries(account.rate_limits)" :key="model">
+                                                <div class="flex items-center gap-2 px-2 py-1 bg-kiro-secondary/50 rounded text-xs font-mono">
+                                                    <span class="text-kiro-text/60" x-text="model.split('-').slice(-2).join('-')"></span>
+                                                    <template x-if="limit.is_limited">
+                                                        <span class="text-red-500">⚠ Limited</span>
+                                                    </template>
+                                                    <template x-if="!limit.is_limited && limit.failures > 0">
+                                                        <span class="text-yellow-500" x-text="`${limit.failures} fails`"></span>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </td>
+
+                            <!-- Last Used -->
+                            <td class="py-4 px-6 text-right">
+                                <template x-if="account.last_used">
+                                    <span class="text-xs font-mono text-kiro-text/60 tabular-nums"
+                                          x-text="formatTimestamp(account.last_used)"></span>
+                                </template>
+                                <template x-if="!account.last_used">
+                                    <span class="text-xs font-mono text-kiro-text/40">Never</span>
+                                </template>
+                            </td>
+                        </tr>
+                    </template>
+
+                    <!-- Empty State -->
+                    <template x-if="accounts.length === 0">
+                        <tr>
+                            <td colspan="5" class="py-12 text-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <svg class="w-12 h-12 text-kiro-text/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                    </svg>
+                                    <div class="text-sm font-mono text-kiro-text/60">No accounts configured</div>
+                                    <div class="text-xs font-mono text-kiro-text/40">Multi-account mode is disabled or no accounts found</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Strategy Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Sticky Strategy -->
+        <div class="bg-kiro-primary border rounded-xl p-5 transition-all duration-300"
+             :class="status.strategy === 'sticky' ? 'border-kiro-cta shadow-lg shadow-kiro-cta/20' : 'border-kiro-secondary hover:border-kiro-cta/30'">
+            <div class="flex items-start gap-3 mb-3">
+                <div class="p-2 bg-purple-500/10 rounded-lg">
+                    <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-sm font-mono text-kiro-text font-bold mb-1">Sticky Strategy</h4>
+                    <p class="text-xs text-kiro-text/60 leading-relaxed">Maintains account continuity for cache optimization. Best for conversational AI.</p>
+                </div>
+            </div>
+            <template x-if="status.strategy === 'sticky'">
+                <div class="mt-3 px-3 py-2 bg-kiro-cta/10 border border-kiro-cta/30 rounded-lg">
+                    <span class="text-xs font-mono text-kiro-cta uppercase tracking-wider">● Currently Active</span>
+                </div>
+            </template>
+        </div>
+
+        <!-- Round-Robin Strategy -->
+        <div class="bg-kiro-primary border rounded-xl p-5 transition-all duration-300"
+             :class="status.strategy === 'round-robin' ? 'border-kiro-cta shadow-lg shadow-kiro-cta/20' : 'border-kiro-secondary hover:border-kiro-cta/30'">
+            <div class="flex items-start gap-3 mb-3">
+                <div class="p-2 bg-blue-500/10 rounded-lg">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-sm font-mono text-kiro-text font-bold mb-1">Round-Robin</h4>
+                    <p class="text-xs text-kiro-text/60 leading-relaxed">Rotates through accounts evenly. Maximum throughput for batch processing.</p>
+                </div>
+            </div>
+            <template x-if="status.strategy === 'round-robin'">
+                <div class="mt-3 px-3 py-2 bg-kiro-cta/10 border border-kiro-cta/30 rounded-lg">
+                    <span class="text-xs font-mono text-kiro-cta uppercase tracking-wider">● Currently Active</span>
+                </div>
+            </template>
+        </div>
+
+        <!-- Hybrid Strategy -->
+        <div class="bg-kiro-primary border rounded-xl p-5 transition-all duration-300"
+             :class="status.strategy === 'hybrid' ? 'border-kiro-cta shadow-lg shadow-kiro-cta/20' : 'border-kiro-secondary hover:border-kiro-cta/30'">
+            <div class="flex items-start gap-3 mb-3">
+                <div class="p-2 bg-kiro-cta/10 rounded-lg">
+                    <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-sm font-mono text-kiro-text font-bold mb-1">Hybrid Strategy</h4>
+                    <p class="text-xs text-kiro-text/60 leading-relaxed">Intelligent weighted scoring. Balanced performance for production workloads.</p>
+                </div>
+            </div>
+            <template x-if="status.strategy === 'hybrid'">
+                <div class="mt-3 px-3 py-2 bg-kiro-cta/10 border border-kiro-cta/30 rounded-lg">
+                    <span class="text-xs font-mono text-kiro-cta uppercase tracking-wider">● Currently Active</span>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>

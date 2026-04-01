@@ -1,0 +1,1165 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0 -- C:\Program Files\Python314\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\tlibi\kiro-gateway
+configfile: pytest.ini
+plugins: anyio-4.12.1, hypothesis-6.151.10, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 10 items
+
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_finds_valid_kiro_files FAILED [ 10%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_extracts_correct_fields FAILED [ 20%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_identifies_expired_accounts FAILED [ 30%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_generates_email_from_provider FAILED [ 40%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_missing_cache_directory FAILED [ 50%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_empty_cache_directory FAILED [ 60%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_non_kiro_files FAILED [ 70%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_corrupt_json FAILED [ 80%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_missing_optional_fields FAILED [ 90%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_invalid_expires_at FAILED [100%]
+
+================================== FAILURES ===================================
+_______ TestScanKiroIdeAccountsSuccess.test_scan_finds_valid_kiro_files _______
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsSuccess object at 0x000001CCCECB2AD0>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF1F2660>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_finds_valid_kiro_fil0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_finds_valid_kiro_files(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Scans a directory with valid Kiro files and returns them.
+        Purpose: Verify the scanner correctly identifies and parses Kiro credential files.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF22FA80>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+---------------------------- Captured stdout setup ----------------------------
+\U0001f6e1\ufe0f GLOBAL NETWORK BLOCKING ACTIVATED
+______ TestScanKiroIdeAccountsSuccess.test_scan_extracts_correct_fields _______
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsSuccess object at 0x000001CCCECB2FD0>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF2B0E10>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_extracts_correct_fie0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_extracts_correct_fields(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Verifies all expected fields are populated from scanned files.
+        Purpose: Ensure email, refresh_token, region, provider are all extracted.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF22FCE0>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+____ TestScanKiroIdeAccountsSuccess.test_scan_identifies_expired_accounts _____
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsSuccess object at 0x000001CCCECBAB10>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF2B1A90>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_identifies_expired_a0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_identifies_expired_accounts(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Marks expired token files as is_expired=True.
+        Purpose: Frontend can display expired status and warn users.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF287410>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+___ TestScanKiroIdeAccountsSuccess.test_scan_generates_email_from_provider ____
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsSuccess object at 0x000001CCCECBAD70>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF22F5C0>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_generates_email_from0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_generates_email_from_provider(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Generates a meaningful email identifier from the provider name.
+        Purpose: Users see 'google-account@kiro.local' instead of a hash.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCECA7240>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+_____ TestScanKiroIdeAccountsEdgeCases.test_scan_missing_cache_directory ______
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECB2E90>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCECBAFD0>
+tmp_path = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_missing_cache_direct0')
+
+    @pytest.mark.asyncio
+    async def test_scan_missing_cache_directory(self, oauth_manager, tmp_path):
+        """
+        What it does: Returns empty list when ~/.aws/sso/cache/ doesn't exist.
+        Purpose: Graceful handling for machines without Kiro IDE installed.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF26A580>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+______ TestScanKiroIdeAccountsEdgeCases.test_scan_empty_cache_directory _______
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECB3110>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF285D90>
+mock_empty_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_empty_cache_director0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_empty_cache_directory(self, oauth_manager, mock_empty_sso_cache_dir):
+        """
+        What it does: Returns empty list when cache directory exists but has no files.
+        Purpose: Handle freshly installed Kiro IDE with no logins.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF272250>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+_______ TestScanKiroIdeAccountsEdgeCases.test_scan_skips_non_kiro_files _______
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECBAC40>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF26A9C0>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_skips_non_kiro_files0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_skips_non_kiro_files(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Ignores JSON files that don't have a refreshToken field.
+        Purpose: Don't pick up regular AWS SSO cache files as Kiro accounts.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:204: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF273550>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+________ TestScanKiroIdeAccountsEdgeCases.test_scan_skips_corrupt_json ________
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECBAEA0>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF26BDF0>
+mock_sso_cache_dir = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_skips_corrupt_json0/.aws/sso/cache')
+
+    @pytest.mark.asyncio
+    async def test_scan_skips_corrupt_json(self, oauth_manager, mock_sso_cache_dir):
+        """
+        What it does: Gracefully handles corrupt JSON files without crashing.
+        Purpose: One bad file shouldn't prevent scanning other valid files.
+        """
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF30EE40>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+_ TestScanKiroIdeAccountsEdgeCases.test_scan_handles_missing_optional_fields __
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECEA570>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF33C850>
+tmp_path = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_handles_missing_opti0')
+
+    @pytest.mark.asyncio
+    async def test_scan_handles_missing_optional_fields(self, oauth_manager, tmp_path):
+        """
+        What it does: Handles Kiro files that have a refreshToken but lack optional fields.
+        Purpose: Minimal Kiro credential files should still be detected.
+        """
+        cache_dir = tmp_path / ".aws" / "sso" / "cache"
+        cache_dir.mkdir(parents=True)
+    
+        minimal_file = {
+            "refreshToken": "minimal_refresh_token"
+        }
+        (cache_dir / "minimal.json").write_text(json.dumps(minimal_file))
+    
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCF30FF20>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+____ TestScanKiroIdeAccountsEdgeCases.test_scan_handles_invalid_expires_at ____
+
+self = <test_oauth_manager.TestScanKiroIdeAccountsEdgeCases object at 0x000001CCCECA7350>
+oauth_manager = <kiro.oauth_manager.OAuthManager object at 0x000001CCCF33D050>
+tmp_path = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-27/test_scan_handles_invalid_expi0')
+
+    @pytest.mark.asyncio
+    async def test_scan_handles_invalid_expires_at(self, oauth_manager, tmp_path):
+        """
+        What it does: Handles files with malformed expiresAt strings.
+        Purpose: Don't crash on unparseable date formats.
+        """
+        cache_dir = tmp_path / ".aws" / "sso" / "cache"
+        cache_dir.mkdir(parents=True)
+    
+        bad_date_file = {
+            "refreshToken": "token_with_bad_date",
+            "expiresAt": "not-a-valid-date"
+        }
+        (cache_dir / "bad-date.json").write_text(json.dumps(bad_date_file))
+    
+>       with patch("kiro.oauth_manager.Path.home") as mock_home:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\unit\test_oauth_manager.py:269: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <unittest.mock._patch object at 0x000001CCCEF83CB0>
+
+    def __enter__(self):
+        """Perform the patch."""
+        if self.is_started:
+            raise RuntimeError("Patch is already started")
+    
+        new, spec, spec_set = self.new, self.spec, self.spec_set
+        autospec, kwargs = self.autospec, self.kwargs
+        new_callable = self.new_callable
+>       self.target = self.getter()
+                      ^^^^^^^^^^^^^
+
+C:\Program Files\Python314\Lib\unittest\mock.py:1487: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'kiro.oauth_manager.Path'
+
+    def resolve_name(name):
+        """
+        Resolve a name to an object.
+    
+        It is expected that `name` will be a string in one of the following
+        formats, where W is shorthand for a valid Python identifier and dot stands
+        for a literal period in these pseudo-regexes:
+    
+        W(.W)*
+        W(.W)*:(W(.W)*)?
+    
+        The first form is intended for backward compatibility only. It assumes that
+        some part of the dotted name is a package, and the rest is an object
+        somewhere within that package, possibly nested inside other objects.
+        Because the place where the package stops and the object hierarchy starts
+        can't be inferred by inspection, repeated attempts to import must be done
+        with this form.
+    
+        In the second form, the caller makes the division point clear through the
+        provision of a single colon: the dotted name to the left of the colon is a
+        package to be imported, and the dotted name to the right is the object
+        hierarchy within that package. Only one import is needed in this form. If
+        it ends with the colon, then a module object is returned.
+    
+        The function will return an object (which might be a module), or raise one
+        of the following exceptions:
+    
+        ValueError - if `name` isn't in a recognised format
+        ImportError - if an import failed when it shouldn't have
+        AttributeError - if a failure occurred when traversing the object hierarchy
+                         within the imported package to get to the desired object.
+        """
+        global _NAME_PATTERN
+        if _NAME_PATTERN is None:
+            # Lazy import to speedup Python startup time
+            import re
+            dotted_words = r'(?!\d)(\w+)(\.(?!\d)(\w+))*'
+            _NAME_PATTERN = re.compile(f'^(?P<pkg>{dotted_words})'
+                                       f'(?P<cln>:(?P<obj>{dotted_words})?)?$',
+                                       re.UNICODE)
+    
+        m = _NAME_PATTERN.match(name)
+        if not m:
+            raise ValueError(f'invalid format: {name!r}')
+        gd = m.groupdict()
+        if gd.get('cln'):
+            # there is a colon - a one-step import is all that's needed
+            mod = importlib.import_module(gd['pkg'])
+            parts = gd.get('obj')
+            parts = parts.split('.') if parts else []
+        else:
+            # no colon - have to iterate to find the package boundary
+            parts = name.split('.')
+            modname = parts.pop(0)
+            # first part *must* be a module/package.
+            mod = importlib.import_module(modname)
+            while parts:
+                p = parts[0]
+                s = f'{modname}.{p}'
+                try:
+                    mod = importlib.import_module(s)
+                    parts.pop(0)
+                    modname = s
+                except ImportError:
+                    break
+        # if we reach this point, mod is the module, already imported, and
+        # parts is the list of parts in the object hierarchy to be traversed, or
+        # an empty list if just the module is wanted.
+        result = mod
+        for p in parts:
+>           result = getattr(result, p)
+                     ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'kiro.oauth_manager' has no attribute 'Path'
+
+C:\Program Files\Python314\Lib\pkgutil.py:473: AttributeError
+-------------------------- Captured stdout teardown ---------------------------
+\U0001f6e1\ufe0f GLOBAL NETWORK BLOCKING DEACTIVATED
+=========================== short test summary info ===========================
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_finds_valid_kiro_files
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_extracts_correct_fields
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_identifies_expired_accounts
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_generates_email_from_provider
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_missing_cache_directory
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_empty_cache_directory
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_non_kiro_files
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_corrupt_json
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_missing_optional_fields
+FAILED tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_invalid_expires_at
+============================= 10 failed in 1.11s ==============================

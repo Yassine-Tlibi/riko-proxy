@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiro Gateway - Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kiro-primary': '#1E293B',
+                        'kiro-secondary': '#334155',
+                        'kiro-cta': '#22C55E',
+                        'kiro-bg': '#0F172A',
+                        'kiro-text': '#F8FAFC',
+                    },
+                    fontFamily: {
+                        'sans': ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body class="bg-kiro-bg font-sans" x-data="dashboard()">
+
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-kiro-primary border-r border-kiro-secondary flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-kiro-secondary">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-kiro-cta rounded-lg flex items-center justify-center text-kiro-bg font-bold text-xl shadow-lg shadow-kiro-cta/50">
+                        KG
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-kiro-text">KIRO GATEWAY</h1>
+                        <p class="text-xs text-kiro-text/60 font-mono">v2.3</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 p-4">
+                <ul class="menu menu-sm gap-1">
+                    <li>
+                        <a @click="currentView = 'dashboard'"
+                           :class="currentView === 'dashboard' ? 'active' : ''"
+                           class="flex items-center gap-3 cursor-pointer hover:bg-kiro-secondary/50 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a @click="currentView = 'models'"
+                           :class="currentView === 'models' ? 'active' : ''"
+                           class="flex items-center gap-3 cursor-pointer hover:bg-kiro-secondary/50 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                            </svg>
+                            Models
+                        </a>
+                    </li>
+                    <li>
+                        <a @click="currentView = 'logs'"
+                           :class="currentView === 'logs' ? 'active' : ''"
+                           class="flex items-center gap-3 cursor-pointer hover:bg-kiro-secondary/50 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Logs
+                        </a>
+                    </li>
+                    <li>
+                        <a @click="currentView = 'settings'"
+                           :class="currentView === 'settings' ? 'active' : ''"
+                           class="flex items-center gap-3 cursor-pointer hover:bg-kiro-secondary/50 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Status Indicator -->
+            <div class="p-4 border-t border-kiro-secondary">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-kiro-cta animate-pulse shadow-lg shadow-kiro-cta/50"></div>
+                    <span class="text-sm text-kiro-text/60 font-mono">ONLINE</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+
+            <!-- Header -->
+            <header class="bg-kiro-primary border-b border-kiro-secondary p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-kiro-text" x-text="currentView.toUpperCase()"></h2>
+                        <p class="text-sm text-kiro-text/60 font-mono">KIRO GATEWAY SYSTEM</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="px-3 py-1 bg-kiro-cta/20 border border-kiro-cta rounded-full flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-kiro-cta shadow-lg shadow-kiro-cta/50"></div>
+                            <span class="text-xs font-mono text-kiro-cta">LIVE</span>
+                        </div>
+                        <span class="text-sm text-kiro-text/60 font-mono" x-text="currentTime"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <div x-show="currentView === 'dashboard'" class="p-6">
+
+                <!-- Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+
+                    <!-- Total Requests -->
+                    <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 hover:border-kiro-cta/50 transition-all duration-200 cursor-pointer">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-kiro-cta/10 rounded-lg">
+                                <svg class="w-6 h-6 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-sm text-kiro-text/60 mb-1 font-mono">TOTAL REQUESTS</div>
+                        <div class="text-3xl font-bold text-kiro-text font-mono" x-text="metrics.total_requests"></div>
+                        <div class="text-xs text-kiro-text/40 mt-2 font-mono">All time</div>
+                    </div>
+
+                    <!-- Active Requests -->
+                    <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 hover:border-kiro-cta/50 transition-all duration-200 cursor-pointer">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-kiro-cta/10 rounded-lg">
+                                <svg class="w-6 h-6 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-sm text-kiro-text/60 mb-1 font-mono">ACTIVE</div>
+                        <div class="text-3xl font-bold text-kiro-cta font-mono" x-text="metrics.active_requests"></div>
+                        <div class="text-xs text-kiro-text/40 mt-2 font-mono">In-flight</div>
+                    </div>
+
+                    <!-- Rate Limited -->
+                    <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 hover:border-yellow-500/50 transition-all duration-200 cursor-pointer">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-yellow-500/10 rounded-lg">
+                                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-sm text-kiro-text/60 mb-1 font-mono">RATE LIMITED</div>
+                        <div class="text-3xl font-bold text-yellow-500 font-mono" x-text="metrics.rate_limited"></div>
+                        <div class="text-xs text-kiro-text/40 mt-2 font-mono">Throttled</div>
+                    </div>
+
+                    <!-- Status Distribution -->
+                    <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 hover:border-kiro-cta/50 transition-all duration-200 cursor-pointer">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="p-3 bg-kiro-cta/10 rounded-lg">
+                                <svg class="w-6 h-6 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="text-sm text-kiro-text/60 mb-1 font-mono">SUCCESS RATE</div>
+                        <div class="text-3xl font-bold text-kiro-text font-mono" x-text="(() => {
+                            const total = Object.values(metrics.status_codes).reduce((a, b) => a + b, 0);
+                            const success = (metrics.status_codes['200'] || 0);
+                            return total > 0 ? Math.round((success / total) * 100) + '%' : '0%';
+                        })()"></div>
+                        <div class="text-xs text-kiro-text/40 mt-2 font-mono">HTTP 200 responses</div>
+                    </div>
+
+                </div>
+
+                <!-- Request Volume Chart -->
+                <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 mb-6 hover:border-kiro-cta/30 transition-all duration-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-kiro-text flex items-center gap-2">
+                            <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            REQUEST VOLUME
+                        </h3>
+                        <div class="text-sm text-kiro-text/60 font-mono">
+                            Total: <span class="text-kiro-cta font-bold" x-text="metrics.request_volume.reduce((sum, p) => sum + p.count, 0)"></span> requests (24h)
+                        </div>
+                    </div>
+                    <canvas id="requestVolumeChart" height="80"></canvas>
+                </div>
+
+                <!-- Model Usage -->
+                <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6 hover:border-kiro-cta/30 transition-all duration-200">
+                    <h3 class="text-lg font-bold text-kiro-text flex items-center gap-2 mb-4">
+                        <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                        MODEL USAGE
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-kiro-secondary">
+                                    <th class="text-left py-3 px-4 text-sm font-mono text-kiro-text/60">MODEL</th>
+                                    <th class="text-right py-3 px-4 text-sm font-mono text-kiro-text/60">REQUESTS</th>
+                                    <th class="text-right py-3 px-4 text-sm font-mono text-kiro-text/60">PERCENTAGE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="[model, count] in Object.entries(metrics.model_usage).sort((a, b) => b[1] - a[1])" :key="model">
+                                    <tr class="border-b border-kiro-secondary/50 hover:bg-kiro-secondary/30 transition-colors duration-150 cursor-pointer">
+                                        <td class="py-3 px-4 font-mono text-sm text-kiro-text" x-text="model"></td>
+                                        <td class="py-3 px-4 font-mono text-sm text-kiro-cta text-right font-bold" x-text="count"></td>
+                                        <td class="py-3 px-4 text-right">
+                                            <div class="flex items-center justify-end gap-3">
+                                                <div class="w-24 h-2 bg-kiro-secondary rounded-full overflow-hidden">
+                                                    <div class="h-full bg-kiro-cta rounded-full transition-all duration-300"
+                                                         :style="`width: ${(count / Math.max(...Object.values(metrics.model_usage))) * 100}%`"></div>
+                                                </div>
+                                                <span class="text-xs font-mono text-kiro-text/60 w-12 text-right" x-text="`${((count / metrics.total_requests) * 100).toFixed(1)}%`"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Models View -->
+            <div x-show="currentView === 'models'" class="p-6">
+                <div class="bg-kiro-primary border border-kiro-cta/50 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <svg class="w-6 h-6 text-kiro-cta flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div>
+                            <p class="text-kiro-text font-mono">Models view - Coming soon. Use <code class="px-2 py-1 bg-kiro-secondary rounded text-kiro-cta font-mono text-sm">/v1/models</code> API endpoint to list available models.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs View -->
+            <div x-show="currentView === 'logs'" class="p-6">
+                <div class="bg-kiro-primary border border-kiro-cta/50 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <svg class="w-6 h-6 text-kiro-cta flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div>
+                            <p class="text-kiro-text font-mono">Logs view - Coming soon. Check <code class="px-2 py-1 bg-kiro-secondary rounded text-kiro-cta font-mono text-sm">debug_logs/</code> directory for detailed request logs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div x-show="currentView === 'settings'" class="p-6">
+                <div class="bg-kiro-primary border border-kiro-secondary rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-kiro-text mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-kiro-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        SYSTEM INFORMATION
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                            <p class="text-sm text-kiro-text/60 mb-2 font-mono">VERSION</p>
+                            <p class="font-mono text-kiro-text text-lg font-bold">2.3</p>
+                        </div>
+                        <div class="p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                            <p class="text-sm text-kiro-text/60 mb-2 font-mono">UPTIME</p>
+                            <p class="font-mono text-kiro-cta text-lg font-bold" x-text="formatUptime(health.uptime_seconds)"></p>
+                        </div>
+                        <div class="p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                            <p class="text-sm text-kiro-text/60 mb-2 font-mono">MEMORY USAGE</p>
+                            <p class="font-mono text-kiro-text text-lg font-bold" x-text="`${health.memory_usage_mb} MB`"></p>
+                        </div>
+                        <div class="p-4 bg-kiro-secondary/30 rounded-lg border border-kiro-secondary">
+                            <p class="text-sm text-kiro-text/60 mb-2 font-mono">STATUS</p>
+                            <p class="font-mono text-kiro-cta text-lg font-bold uppercase" x-text="health.status"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Dashboard JavaScript -->
+    <script src="/static/js/dashboard.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+/* Custom Dashboard Styles - Kiro Gateway */
+
+/* Base styles */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0F172A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #22C55E;
+}
+
+/* Menu active state with glow effect */
+.menu li a.active {
+    background-color: rgba(34, 197, 94, 0.15);
+    color: #22C55E;
+    border-left: 3px solid #22C55E;
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+}
+
+/* Cursor pointer for all interactive elements */
+.cursor-pointer,
+button,
+a,
+[role="button"],
+[onclick],
+[x-on\:click] {
+    cursor: pointer;
+}
+
+/* Smooth hover transitions */
+.hover\:border-kiro-cta\/50:hover,
+.hover\:border-kiro-cta\/30:hover,
+.hover\:border-yellow-500\/50:hover {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+}
+
+/* Glow effect for active elements */
+.shadow-lg.shadow-kiro-cta\/50 {
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+}
+
+/* Table hover with smooth transition */
+table tbody tr:hover {
+    background-color: rgba(51, 65, 85, 0.3);
+}
+
+/* Badge pulse animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Chart container */
+canvas {
+    max-height: 300px;
+}
+
+/* Code styling */
+code {
+    background-color: #334155;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #22C55E;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Enhanced focus states for accessibility */
+*:focus-visible {
+    outline: 3px solid #22C55E;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #22C55E;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+}
+
+/* Skip to main content link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #22C55E;
+    color: #0F172A;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: bold;
+    z-index: 9999;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Keyboard navigation indicators */
+.nav-item:focus-within {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-left: 3px solid #22C55E;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    * {
+        border-width: 2px !important;
+    }
+
+    *:focus-visible {
+        outline-width: 4px;
+        outline-offset: 4px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .animate-pulse,
+    .animate-spin {
+        animation: none !important;
+    }
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.sr-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    aside {
+        width: 200px;
+    }
+
+    .text-3xl {
+        font-size: 1.75rem;
+    }
+
+    /* Larger touch targets for mobile */
+    button,
+    a,
+    input,
+    select {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Minimal glow for text elements */
+h1, h2, h3 {
+    text-shadow: 0 0 10px rgba(248, 250, 252, 0.1);
+}
+
+/* Progress bar animation */
+.transition-all {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading state shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.loading-shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+        to right,
+        #1E293B 0%,
+        #334155 50%,
+        #1E293B 100%
+    );
+    background-size: 1000px 100%;
+}
+
+/* Disabled state styling */
+button:disabled,
+input:disabled,
+select:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Error state styling */
+input.border-red-500:focus-visible {
+    outline-color: #EF4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
+
+/* Success state styling */
+.border-kiro-cta:focus-visible {
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.3);
+}
+
+/* Tooltip accessibility */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #1E293B;
+    color: #F8FAFC;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 8px;
+}

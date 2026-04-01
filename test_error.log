@@ -1,0 +1,31 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0 -- C:\Program Files\Python314\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\tlibi\kiro-gateway
+configfile: pytest.ini
+plugins: anyio-4.12.1, hypothesis-6.151.10, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 17 items
+
+tests/unit/test_account_manager.py::TestAccountManager::test_initialize_creates_default_file FAILED [  5%]
+
+================================== FAILURES ===================================
+___________ TestAccountManager.test_initialize_creates_default_file ___________
+tests\unit\test_account_manager.py:87: in test_initialize_creates_default_file
+    assert Path(temp_accounts_file).exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-16/test_initialize_creates_defaul0/accounts.json').exists
+E    +      where WindowsPath('C:/Users/tlibi/AppData/Local/Temp/pytest-of-tlibi/pytest-16/test_initialize_creates_defaul0/accounts.json') = Path('C:\\Users\\tlibi\\AppData\\Local\\Temp\\pytest-of-tlibi\\pytest-16\\test_initialize_creates_defaul0\\accounts.json')
+---------------------------- Captured stdout setup ----------------------------
+\U0001f6e1\ufe0f GLOBAL NETWORK BLOCKING ACTIVATED
+---------------------------- Captured stderr call -----------------------------
+2026-03-31 21:54:47.212 | INFO     | kiro.account_storage:load:221 - [AccountStorage] No accounts file found at C:\Users\tlibi\AppData\Local\Temp\pytest-of-tlibi\pytest-16\test_initialize_creates_defaul0\accounts.json
+2026-03-31 21:54:47.213 | INFO     | kiro.account_manager:initialize:137 - [AccountManager] Initialized with 0 accounts using hybrid strategy
+-------------------------- Captured stdout teardown ---------------------------
+\U0001f6e1\ufe0f GLOBAL NETWORK BLOCKING DEACTIVATED
+=========================== short test summary info ===========================
+FAILED tests/unit/test_account_manager.py::TestAccountManager::test_initialize_creates_default_file
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+============================== 1 failed in 0.44s ==============================

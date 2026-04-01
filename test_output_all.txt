@@ -1,0 +1,493 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.2, pytest-9.0.2, pluggy-1.6.0 -- C:\Program Files\Python314\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: C:\Users\tlibi\kiro-gateway
+configfile: pytest.ini
+plugins: anyio-4.12.1, hypothesis-6.151.10, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 35 items
+
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_finds_valid_kiro_files PASSED [  2%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_extracts_correct_fields PASSED [  5%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_identifies_expired_accounts PASSED [  8%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsSuccess::test_scan_generates_email_from_provider PASSED [ 11%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_missing_cache_directory PASSED [ 14%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_empty_cache_directory PASSED [ 17%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_non_kiro_files PASSED [ 20%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_skips_corrupt_json PASSED [ 22%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_missing_optional_fields PASSED [ 25%]
+tests/unit/test_oauth_manager.py::TestScanKiroIdeAccountsEdgeCases::test_scan_handles_invalid_expires_at PASSED [ 28%]
+tests/unit/test_routes_accounts.py::TestScanEndpointSuccess::test_scan_returns_found_accounts FAILED [ 31%]
+tests/unit/test_routes_accounts.py::TestScanEndpointSuccess::test_scan_returns_correct_account_data PASSED [ 34%]
+tests/unit/test_routes_accounts.py::TestScanEndpointErrors::test_scan_requires_authentication PASSED [ 37%]
+tests/unit/test_routes_accounts.py::TestScanEndpointErrors::test_scan_rejects_invalid_api_key PASSED [ 40%]
+tests/unit/test_routes_accounts.py::TestScanEndpointErrors::test_scan_fails_when_oauth_manager_missing PASSED [ 42%]
+tests/unit/test_routes_accounts.py::TestBulkImportSuccess::test_import_single_account FAILED [ 45%]
+tests/unit/test_routes_accounts.py::TestBulkImportSuccess::test_import_multiple_accounts FAILED [ 48%]
+tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_empty_list_returns_400 PASSED [ 51%]
+tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_skips_accounts_without_refresh_token FAILED [ 54%]
+tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_handles_storage_failure FAILED [ 57%]
+tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_requires_multi_account_enabled FAILED [ 60%]
+tests/unit/test_routes_accounts.py::TestManualAddEndpoint::test_add_manual_success FAILED [ 62%]
+tests/unit/test_routes_accounts.py::TestManualAddEndpoint::test_add_manual_requires_refresh_token PASSED [ 65%]
+tests/unit/test_routes_accounts.py::TestManualAddEndpoint::test_add_manual_requires_multi_account FAILED [ 68%]
+tests/unit/test_routes_accounts.py::TestRemoveEndpoint::test_remove_account_success FAILED [ 71%]
+tests/unit/test_routes_accounts.py::TestRemoveEndpoint::test_remove_nonexistent_account PASSED [ 74%]
+tests/unit/test_routes_accounts.py::TestRemoveEndpoint::test_remove_requires_email PASSED [ 77%]
+tests/unit/test_routes_accounts.py::TestToggleEndpoint::test_toggle_account_disable FAILED [ 80%]
+tests/unit/test_routes_accounts.py::TestToggleEndpoint::test_toggle_account_enable FAILED [ 82%]
+tests/unit/test_routes_accounts.py::TestToggleEndpoint::test_toggle_requires_email PASSED [ 85%]
+tests/unit/test_routes_accounts.py::TestAuthenticationEnforcement::test_endpoints_reject_invalid_key[GET-/api/v1/accounts/scan-None] PASSED [ 88%]
+tests/unit/test_routes_accounts.py::TestAuthenticationEnforcement::test_endpoints_reject_invalid_key[POST-/api/v1/accounts/add/scan-body1] PASSED [ 91%]
+tests/unit/test_routes_accounts.py::TestAuthenticationEnforcement::test_endpoints_reject_invalid_key[POST-/api/v1/accounts/add/manual-body2] PASSED [ 94%]
+tests/unit/test_routes_accounts.py::TestAuthenticationEnforcement::test_endpoints_reject_invalid_key[POST-/api/v1/accounts/remove-body3] PASSED [ 97%]
+tests/unit/test_routes_accounts.py::TestAuthenticationEnforcement::test_endpoints_reject_invalid_key[POST-/api/v1/accounts/toggle-body4] PASSED [100%]
+
+================================== FAILURES ===================================
+__________ TestScanEndpointSuccess.test_scan_returns_found_accounts ___________
+tests\unit\test_routes_accounts.py:132: in test_scan_returns_found_accounts
+    assert data["count"] == 2
+E   assert 1 == 2
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36m<module>[0m:[36m543[0m - [1mMetrics middleware registered[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36m<module>[0m:[36m562[0m - [1mDashboard API routes registered[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36m<module>[0m:[36m568[0m - [1mAccounts management routes registered[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36m<module>[0m:[36m575[0m - [1mDashboard UI available at http://0.0.0.0:9000[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mscan_kiro_ide_accounts[0m:[36m261[0m - [1mScanning for Kiro IDE accounts in: C:\Users\tlibi\.aws\sso\cache[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mscan_kiro_ide_accounts[0m:[36m326[0m - [1mFound 1 Kiro IDE account(s)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36mscan_kiro_ide_accounts[0m:[36m337[0m - [1mScanned and found 1 Kiro IDE account(s)[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+______________ TestBulkImportSuccess.test_import_single_account _______________
+tests\unit\test_routes_accounts.py:240: in test_import_single_account
+    assert data["success"] is True
+E   assert False is True
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account google-account@kiro.local: Account with email google-account@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m440[0m - [1mBulk scan import complete: 0 imported, 1 failed[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+_____________ TestBulkImportSuccess.test_import_multiple_accounts _____________
+tests\unit\test_routes_accounts.py:276: in test_import_multiple_accounts
+    assert data["imported"] == 2
+E   assert 0 == 2
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account account1@kiro.local: Account with email account1@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account account2@kiro.local: Account with email account2@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m440[0m - [1mBulk scan import complete: 0 imported, 2 failed[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+____ TestBulkImportErrors.test_import_skips_accounts_without_refresh_token ____
+tests\unit\test_routes_accounts.py:322: in test_import_skips_accounts_without_refresh_token
+    assert data["imported"] == 1
+E   assert 0 == 1
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account has-token@kiro.local: Account with email has-token@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m440[0m - [1mBulk scan import complete: 0 imported, 2 failed[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+__________ TestBulkImportErrors.test_import_handles_storage_failure ___________
+tests\unit\test_routes_accounts.py:353: in test_import_handles_storage_failure
+    assert data["imported"] == 1
+E   assert 0 == 1
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account ok@kiro.local: Account with email ok@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account fail@kiro.local: Account with email fail@kiro.local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m440[0m - [1mBulk scan import complete: 0 imported, 2 failed[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+_______ TestBulkImportErrors.test_import_requires_multi_account_enabled _______
+tests\unit\test_routes_accounts.py:370: in test_import_requires_multi_account_enabled
+    assert response.status_code == 503
+E   assert 200 == 503
+E    +  where 200 = <Response [200 OK]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [33m[1mWARNING [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m436[0m - [33m[1mFailed to import scanned account test@local: Account with email test@local already exists[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.routes_accounts[0m:[36madd_scanned_accounts[0m:[36m440[0m - [1mBulk scan import complete: 0 imported, 1 failed[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+________________ TestManualAddEndpoint.test_add_manual_success ________________
+tests\unit\test_routes_accounts.py:399: in test_add_manual_success
+    assert response.status_code == 200
+E   assert 400 == 200
+E    +  where 400 = <Response [400 Bad Request]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.oauth_manager[0m:[36madd_account_manual[0m:[36m188[0m - [31m[1mFailed to validate account: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.routes_accounts[0m:[36madd_account_manual[0m:[36m221[0m - [31m[1mFailed to add account manually: Invalid refresh token: cannot access local variable 'data' where it is not associated with a value[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+________ TestManualAddEndpoint.test_add_manual_requires_multi_account _________
+tests\unit\test_routes_accounts.py:435: in test_add_manual_requires_multi_account
+    assert response.status_code == 503
+E   assert 400 == 503
+E    +  where 400 = <Response [400 Bad Request]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.oauth_manager[0m:[36madd_account_manual[0m:[36m188[0m - [31m[1mFailed to validate account: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.routes_accounts[0m:[36madd_account_manual[0m:[36m221[0m - [31m[1mFailed to add account manually: Invalid refresh token: cannot access local variable 'data' where it is not associated with a value[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+_______________ TestRemoveEndpoint.test_remove_account_success ________________
+tests\unit\test_routes_accounts.py:459: in test_remove_account_success
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.routes_accounts[0m:[36mremove_account[0m:[36m490[0m - [31m[1mFailed to remove account: Account with email user@example.com not found[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+_______________ TestToggleEndpoint.test_toggle_account_disable ________________
+tests\unit\test_routes_accounts.py:518: in test_toggle_account_disable
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.routes_accounts[0m:[36mtoggle_account[0m:[36m542[0m - [31m[1mFailed to toggle account: Account with email user@example.com not found[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+________________ TestToggleEndpoint.test_toggle_account_enable ________________
+tests\unit\test_routes_accounts.py:540: in test_toggle_account_enable
+    assert response.status_code == 200
+E   assert 404 == 200
+E    +  where 404 = <Response [404 Not Found]>.status_code
+---------------------------- Captured stdout setup ----------------------------
+Importing application for test...
+---------------------------- Captured stderr setup ----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m332[0m - [1mStarting application... Creating state managers.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m354[0m - [1mShared HTTP client created with connection pooling[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m358[0m - [1mMulti-account mode enabled[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstart[0m:[36m68[0m - [1mOAuth manager started[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m365[0m - [1mOAuth manager initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_manager[0m:[36minitialize[0m:[36m138[0m - [1m[AccountManager] Initialized with 7 accounts using hybrid strategy[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m375[0m - [1mAccountManager initialized: 7/7 accounts available (strategy: hybrid)[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m__init__[0m:[36m170[0m - [1mAuth manager initialized: region=us-east-1, api_host=https://q.us-east-1.amazonaws.com, q_host=https://q.us-east-1.amazonaws.com[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_load_credentials_from_file[0m:[36m375[0m - [1mCredentials loaded from C:\Users\tlibi\.aws\sso\cache\kiro-auth-token.json[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_detect_auth_type[0m:[36m197[0m - [1mDetected auth type: Kiro Desktop[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m404[0m - [1mLoading models from Kiro API...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.auth[0m:[36m_refresh_token_kiro_desktop[0m:[36m590[0m - [1mRefreshing Kiro token via Kiro Desktop Auth...[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m435[0m - [31m[1mFailed to fetch models from Kiro API: cannot access local variable 'data' where it is not associated with a value[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mmain[0m:[36mlifespan[0m:[36m436[0m - [31m[1mUsing pre-configured fallback models. Not all models may be available on your plan, or the list may be outdated.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.cache[0m:[36mupdate[0m:[36m76[0m - [1mUpdating model cache. Found 5 models.[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m452[0m - [1mModel cache ready: 6 models total[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m461[0m - [1mModel resolver initialized[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m471[0m - [1mInitializing dashboard...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.metrics_storage[0m:[36m__init__[0m:[36m53[0m - [1mMetricsStorage initialized at metrics.db[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m480[0m - [1mDashboard enabled - metrics stored in metrics.db[0m
+---------------------------- Captured stderr call -----------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.account_storage[0m:[36mload[0m:[36m248[0m - [1m[AccountStorage] Loaded 7 accounts from C:\Users\tlibi\.config\kiro-gateway\accounts.json[0m
+[32m2026-04-01 14:43:27[0m | [31m[1mERROR   [0m | [36mkiro.routes_accounts[0m:[36mtoggle_account[0m:[36m542[0m - [31m[1mFailed to toggle account: Account with email user@example.com not found[0m
+-------------------------- Captured stderr teardown ---------------------------
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m485[0m - [1mShutting down application...[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mkiro.oauth_manager[0m:[36mstop[0m:[36m78[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m491[0m - [1mOAuth manager stopped[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m500[0m - [1mDashboard metrics cleaned up[0m
+[32m2026-04-01 14:43:27[0m | [1mINFO    [0m | [36mmain[0m:[36mlifespan[0m:[36m506[0m - [1mShared HTTP client closed[0m
+=========================== short test summary info ===========================
+FAILED tests/unit/test_routes_accounts.py::TestScanEndpointSuccess::test_scan_returns_found_accounts
+FAILED tests/unit/test_routes_accounts.py::TestBulkImportSuccess::test_import_single_account
+FAILED tests/unit/test_routes_accounts.py::TestBulkImportSuccess::test_import_multiple_accounts
+FAILED tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_skips_accounts_without_refresh_token
+FAILED tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_handles_storage_failure
+FAILED tests/unit/test_routes_accounts.py::TestBulkImportErrors::test_import_requires_multi_account_enabled
+FAILED tests/unit/test_routes_accounts.py::TestManualAddEndpoint::test_add_manual_success
+FAILED tests/unit/test_routes_accounts.py::TestManualAddEndpoint::test_add_manual_requires_multi_account
+FAILED tests/unit/test_routes_accounts.py::TestRemoveEndpoint::test_remove_account_success
+FAILED tests/unit/test_routes_accounts.py::TestToggleEndpoint::test_toggle_account_disable
+FAILED tests/unit/test_routes_accounts.py::TestToggleEndpoint::test_toggle_account_enable
+======================== 11 failed, 24 passed in 1.16s ========================

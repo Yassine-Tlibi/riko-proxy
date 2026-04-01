@@ -66,7 +66,7 @@ from kiro.config import (
     SERVER_HOST,
     SERVER_PORT,
     DEFAULT_SERVER_HOST,
-    DEFAULT_SERVER_PORT,
+    DEFAULT_SERVER_PORT as _ORIGINAL_DEFAULT_PORT,
     STREAMING_READ_TIMEOUT,
     HIDDEN_MODELS,
     MODEL_ALIASES,
@@ -74,7 +74,16 @@ from kiro.config import (
     FALLBACK_MODELS,
     VPN_PROXY_URL,
     _warn_timeout_configuration,
+    DASHBOARD_ENABLED,
+    DASHBOARD_DB_PATH,
+    DASHBOARD_RETENTION_DAYS,
+    MULTI_ACCOUNT_ENABLED,
+    ACCOUNTS_FILE,
+    ACCOUNT_STRATEGY,
 )
+
+# Override default port to 9000
+DEFAULT_SERVER_PORT = 9000
 from kiro.auth import KiroAuthManager
 from kiro.cache import ModelInfoCache
 from kiro.model_resolver import ModelResolver
@@ -82,6 +91,15 @@ from kiro.routes_openai import router as openai_router
 from kiro.routes_anthropic import router as anthropic_router
 from kiro.exceptions import validation_exception_handler
 from kiro.debug_middleware import DebugLoggerMiddleware
+
+# Dashboard imports (conditional based on DASHBOARD_ENABLED)
+if DASHBOARD_ENABLED:
+    from fastapi.staticfiles import StaticFiles
+    from kiro.metrics_middleware import MetricsMiddleware
+    from kiro.metrics_storage import MetricsStorage
+    from kiro.metrics_collector import MetricsCollector
+    from kiro.routes_dashboard import router as dashboard_router
+    from kiro.routes_logs import router as logs_router
 
 
 # --- Loguru Configuration ---
@@ -334,8 +352,40 @@ async def lifespan(app: FastAPI):
         follow_redirects=True
     )
     logger.info("Shared HTTP client created with connection pooling")
-    
-    # Create AuthManager
+
+    # Initialize multi-account manager if enabled
+    if MULTI_ACCOUNT_ENABLED:
+        logger.info("Multi-account mode enabled")
+        from kiro.account_manager import AccountManager
+        from kiro.oauth_manager import OAuthManager
+
+        # Initialize OAuth manager
+        app.state.oauth_manager = OAuthManager()
+        await app.state.oauth_manager.start()
+        logger.info("OAuth manager initialized")
+
+        app.state.account_manager = AccountManager(
+            accounts_file=ACCOUNTS_FILE,
+            strategy_name=ACCOUNT_STRATEGY
+        )
+
+        try:
+            await app.state.account_manager.initialize()
+            status = await app.state.account_manager.get_account_status()
+            logger.info(
+                f"AccountManager initialized: {status['available']}/{status['total']} "
+                f"accounts available (strategy: {status['strategy']})"
+            )
+        except Exception as e:
+            logger.error(f"Failed to initialize AccountManager: {e}")
+            logger.warning("Falling back to single-account mode")
+            app.state.account_manager = None
+    else:
+        logger.info("Single-account mode (multi-account disabled)")
+        app.state.account_manager = None
+        app.state.oauth_manager = None
+
+    # Create AuthManager (for single-account mode or fallback)
     # Priority: SQLite DB > JSON file > environment variables
     app.state.auth_manager = KiroAuthManager(
         refresh_token=REFRESH_TOKEN,
@@ -415,11 +465,42 @@ async def lifespan(app: FastAPI):
         logger.debug(f"Model aliases configured: {list(MODEL_ALIASES.keys())}")
     if HIDDEN_FROM_LIST:
         logger.debug(f"Models hidden from list: {HIDDEN_FROM_LIST}")
-    
+
+    # Initialize dashboard if enabled
+    if DASHBOARD_ENABLED:
+        logger.info("Initializing dashboard...")
+
+        # Create metrics storage
+        app.state.metrics_storage = MetricsStorage(DASHBOARD_DB_PATH)
+
+        # Create metrics collector
+        app.state.metrics_collector = MetricsCollector()
+        app.state.metrics_collector.storage = app.state.metrics_storage
+
+        logger.info(f"Dashboard enabled - metrics stored in {DASHBOARD_DB_PATH}")
+
     yield
-    
+
     # Graceful shutdown
     logger.info("Shutting down application...")
+
+    # Cleanup OAuth manager
+    if MULTI_ACCOUNT_ENABLED and hasattr(app.state, 'oauth_manager'):
+        try:
+            await app.state.oauth_manager.stop()
+            logger.info("OAuth manager stopped")
+        except Exception as e:
+            logger.warning(f"Error stopping OAuth manager: {e}")
+
+    # Cleanup dashboard resources
+    if DASHBOARD_ENABLED and hasattr(app.state, 'metrics_storage'):
+        try:
+            # Cleanup old metrics based on retention policy
+            app.state.metrics_storage.cleanup_old_metrics(DASHBOARD_RETENTION_DAYS)
+            logger.info("Dashboard metrics cleaned up")
+        except Exception as e:
+            logger.warning(f"Error cleaning up dashboard metrics: {e}")
+
     try:
         await app.state.http_client.aclose()
         logger.info("Shared HTTP client closed")
@@ -454,6 +535,14 @@ app.add_middleware(
 app.add_middleware(DebugLoggerMiddleware)
 
 
+# --- Metrics Middleware (Dashboard) ---
+# Collects metrics for dashboard visualization
+# Only added if dashboard is enabled
+if DASHBOARD_ENABLED:
+    app.add_middleware(MetricsMiddleware)
+    logger.info("Metrics middleware registered")
+
+
 # --- Validation Error Handler Registration ---
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
@@ -464,6 +553,26 @@ app.include_router(openai_router)
 
 # Anthropic-compatible API: /v1/messages
 app.include_router(anthropic_router)
+
+# Dashboard API and static files (if enabled)
+if DASHBOARD_ENABLED:
+    # Include dashboard API routes
+    app.include_router(dashboard_router)
+    app.include_router(logs_router)
+    logger.info("Dashboard API routes registered")
+
+    # Include accounts management routes (if multi-account enabled)
+    if MULTI_ACCOUNT_ENABLED:
+        from kiro.routes_accounts import router as accounts_router
+        app.include_router(accounts_router)
+        logger.info("Accounts management routes registered")
+
+    # Mount static files for dashboard assets
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+    # Mount dashboard HTML at root (must be last to avoid conflicts)
+    app.mount("/", StaticFiles(directory="static", html=True), name="dashboard")
+    logger.info(f"Dashboard UI available at http://{SERVER_HOST}:{SERVER_PORT}")
 
 
 # --- Uvicorn log config ---
@@ -636,10 +745,10 @@ if __name__ == "__main__":
     
     # Resolve final configuration with priority hierarchy
     final_host, final_port = resolve_server_config(args)
-    
-    # Print startup banner
-    print_startup_banner(final_host, final_port)
-    
+
+    # Print startup banner (commented out due to Windows encoding issues with emojis)
+    # print_startup_banner(final_host, final_port)
+
     logger.info(f"Starting Uvicorn server on {final_host}:{final_port}...")
     
     # Use string reference to avoid double module import
